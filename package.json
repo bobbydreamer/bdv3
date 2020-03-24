@@ -1,9 +1,9 @@
 {
   "private": true,
-  "name": "minimal-blog",
-  "description": "Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and line highlighting.",
+  "name": "bobby_dreamer",
+  "description": "Sushanth Bobby Lloyds. Programming. Games. Music. Videos. Resume. Experiments.",
   "version": "1.0.8",
-  "author": "LekoArts <hello@lekoarts.de>",
+  "author": "sushanth bobby lloyds | Template by LekoArts <hello@lekoarts.de>",
   "license": "MIT",
   "starter-name": "gatsby-starter-minimal-blog",
   "scripts": {
@@ -19,10 +19,12 @@
     "@lekoarts/gatsby-theme-minimal-blog": "^2.2.2",
     "gatsby": "^2.13.3",
     "gatsby-plugin-google-analytics": "^2.1.4",
-    "gatsby-plugin-manifest": "^2.2.3",
+    "gatsby-plugin-manifest": "^2.2.48",
     "gatsby-plugin-netlify": "^2.1.3",
     "gatsby-plugin-offline": "^2.2.4",
     "gatsby-plugin-sitemap": "^2.2.19",
+    "gatsby-source-filesystem": "^2.1.57",
+    "gatsby-transformer-remark": "^2.6.59",
     "react": "^16.9.0",
     "react-dom": "^16.9.0"
   },

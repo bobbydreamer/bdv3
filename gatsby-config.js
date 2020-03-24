@@ -4,7 +4,12 @@ require(`dotenv`).config({
 
 module.exports = {
   siteMetadata: {
-    siteTitleAlt: `Minimal Blog - Gatsby Theme`,
+    siteTitle: `bobby_dreamer`,    
+    siteTitleAlt: `BobbyDreamer - Works of Sushanth Bobby Lloyds`,
+    siteHeadline: `Personal website of Sushanth Bobby Lloyds`,
+    siteUrl: `https://www.bobbydreamer.com`,
+    siteDescription: `Sushanth Bobby Lloyds. Programming. Games. Music. Videos. Resume. Experiments.`,
+    author: `Sushanth Bobby Lloyds`,
   },
   plugins: [
     {
@@ -12,22 +17,34 @@ module.exports = {
       options: {
         navigation: [
           {
-            title: `Blog`,
+            title: `bio`,
+            slug: `/bio`,
+          },          
+          {
+            title: `blog`,
             slug: `/blog`,
           },
           {
-            title: `About`,
-            slug: `/about`,
+            title: `T.I.L`,
+            slug: `/til`,
+          },
+          {
+            title: `music`,
+            slug: `/music`,
+          },
+          {
+            title: `movies`,
+            slug: `/movies`,
           },
         ],
         externalLinks: [
           {
-            name: `Twitter`,
-            url: `https://twitter.com/lekoarts_de`,
+            name: `Github`,
+            url: `https://github.com/bobbydreamer`,
           },
           {
-            name: `Instagram`,
-            url: `https://www.instagram.com/lekoarts.de/`,
+            name: `LinkedIn`,
+            url: `https://www.linkedin.com/in/sushanth-bobby-lloyds/`,
           },
         ],
       },
@@ -35,21 +52,26 @@ module.exports = {
     {
       resolve: `gatsby-plugin-google-analytics`,
       options: {
-        trackingId: process.env.GOOGLE_ANALYTICS_ID,
+        trackingId: "UA-160722747-1",
       },
     },
     `gatsby-plugin-sitemap`,
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `minimal-blog - @lekoarts/gatsby-theme-minimal-blog`,
-        short_name: `minimal-blog`,
-        description: `Typography driven, feature-rich blogging theme with minimal aesthetics. Includes tags/categories support and extensive features for code blocks such as live preview, line numbers, and code highlighting.`,
+        name: `BobbyDreamer - Works of Sushanth Bobby Lloyds`,
+        short_name: `bobby|dreamer`,
+        description: `Sushanth Bobby Lloyds. Programming. Games. Music. Videos. Resume. Experiments.`,
         start_url: `/`,
         background_color: `#fff`,
-        theme_color: `#6B46C1`,
+        theme_color: `#0ec46c`,
         display: `standalone`,
         icons: [
+          {
+            src: `/favicon-32x32`,
+            sizes: `32x32`,
+            type: `image/png`,
+          },
           {
             src: `/android-chrome-192x192.png`,
             sizes: `192x192`,
@@ -64,7 +86,16 @@ module.exports = {
       },
     },
     `gatsby-plugin-offline`,
-    `gatsby-plugin-netlify`,
+    `gatsby-plugin-netlify`,    
     // `gatsby-plugin-webpack-bundle-analyser-v2`,
+    `gatsby-transformer-remark`,
+    {
+      resolve: 'gatsby-source-filesystem', 
+      options: {
+        name: 'content',
+        path: `${__dirname}/content`
+      }
+     }    
   ],
 }
+ 
