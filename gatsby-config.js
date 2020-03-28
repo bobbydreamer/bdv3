@@ -17,7 +17,7 @@ module.exports = {
       options: {
         navigation: [
           {
-            title: `bio`,
+            title: `about_me`,
             slug: `/bio`,
           },          
           {

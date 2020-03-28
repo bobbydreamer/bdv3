@@ -1,5 +1,5 @@
 ---
-title: How i made this site
+title: How i made this gatsby site
 date: 2020-03-15
 description: How i made this gatsby site
 tags:
@@ -7,6 +7,20 @@ tags:
   - gatsbyjs
 slug: "/how-i-made-this-site"
 ---
+
+This process is going to be same as how every software application is made ,there is nothing different. First there was a plan and it was very simple "Make a new site" and then requirements starts pouring in and eventually, i said to myself, it needs to stop and then made a choice and went on with it. 
+
+This is the thing, **THE SDLC**
+
+| N  | Stages                                   | Activity |
+| -- | ---------------------------------------- | ---- |
+| 1  | [Plan](/things-that-my-new-site-should-have) | I want to build a new site. So started collecting all the things, i want in this new site. There is no stopping me here |
+| 2  | [Define](/epiphany-moment)  | Epiphany Moment. Its going to be a plain content site, nothing else. <-- thats not a dot, its a full stop to everything except content |
+| 3  | Design | Well you are here. Next 3 stages are repetitive |
+| 4  | Build | Started to add some content here |
+| 5  | Test | This is a test till break stage. If it breaks, go back to stage (3)/(4) depending on the issue. If it does not break, then you are in UAT/Pre-PROD zone. Do the final testing. If all OK, move to next stage. |
+| 6  | [Deploy](/deploying-and-hosting-gatsby-site-in-firebase) | Truly a ninja moment, nobody knows that this site exists, but it does |
+| 7  | Maintenance | Add more content |
 
 ### # Steps to make a gatsby site
 
@@ -36,7 +50,7 @@ slug: "/how-i-made-this-site"
 
 1. Visit the site `http://localhost:8000/` in browser of your choice. 
 
-After seeing the site working. First change we will be making is in `gatsby-config.js` and i have highlighted the updated portions in the below file
+After seeing the site working. First change we will be making is in `gatsby-config.js` and i have highlighted the updated lines
   ```json {7-12,19-38,41-48,55,62-64}
   require(`dotenv`).config({
     path: `.env`,
@@ -128,10 +142,8 @@ After seeing the site working. First change we will be making is in `gatsby-conf
   ```
 
 #### Changes to home page 
-* Updating the main banner text called the "Hero" text   
-  To edit the hero text ("Hi, I'm Lupin...), create a file at `src/@lekoarts/gatsby-theme-minimal-blog/texts/hero.mdx` 
-  to edit the text.
-    ```MD:title=hero.mdx
+* Updating the text in homepage banner. Its in a file called `hero.mdx`. To change the banner text (`Hi, I'm Lupin...`), create a folder & file in path mentioned in code header below. 
+    ```MD:title=main-folder/src/@lekoarts/gatsby-theme-minimal-blog/texts/hero.mdx
     <h3>Hello, I'am Sushanth.</h3>
 
     I am a mainframe Db2 DBA. 
@@ -142,9 +154,8 @@ After seeing the site working. First change we will be making is in `gatsby-conf
     This site is my sandbox, probably will contain collection of my unorganized notes/articles, programming tests, home projects, fav. music, fav. YT videos and VLC screenshots not sure why i take those, mostly stuff i took time to look at.
     ```
 
-* Updating the "Projects" part which is below the "Latest Posts" in the home page   
-  Create a file at `src/@lekoarts/gatsby-theme-minimal-blog/texts/bottom.mdx` to edit the contents.
-    ```MD:title=bottom.mdx 
+* Updating the "Projects" section of the homepage which is in the bottom after "Latest Posts". Create a file in the path mentioned in the code header below.
+    ```MD:title=main-folder/src/@lekoarts/gatsby-theme-minimal-blog/texts/bottom.mdx 
     <Title text="Home Projects" />
 
     - [Stash](http://stash.bobbydreamer.com)
@@ -155,7 +166,7 @@ After seeing the site working. First change we will be making is in `gatsby-conf
 
 ##### Adding new page
 New page insense like, its an isolated page which needs to be in the top header-menu. For this site, i have decided 
-to have below pages, 
+to have below pages, for now
 + **bio** - Possibly going to be a long resume
 + **blog** - I have no intention of creating something like article as most of the content is going to be a How-to, Step-by-step and 
 if its NON-IT, just few words on why i took time to post about it. So, subsections of this page going to be 
@@ -212,6 +223,68 @@ Posts can be created/added by creating MDX files inside `content/posts` folder.
 
 1. Optionally add files/images to the folder you want to reference from the page
 
+### # Test 
+
+Testing is quite simple. All you need to do is to type the below command, this will start a development server in your machine and watch for changes and refresh the site(just like nodemon)
+```sh 
+gatsby develop 
+```
+
+Below will be the output of the above command 
+```sh 
+PS D:\BigData\08. HTML\Gatsby\lupin\bdv2> gatsby develop
+success open and validate gatsby-configs - 0.271s
+success load plugins - 4.072s
+success onPreInit - 0.030s
+success initialize cache - 0.040s
+success copy gatsby files - 0.275s
+success onPreBootstrap - 0.039s
+success createSchemaCustomization - 0.024s
+success source and transform nodes - 1.319s
+success building schema - 1.080s
+success createPages - 0.280s
+success createPagesStatefully - 0.237s
+success onPreExtractQueries - 0.015s
+success update schema - 0.101s   
+success extract queries from components - 1.142s
+success write out requires - 0.460s
+success write out redirect data - 0.029s
+success Build manifest and related icons - 0.027s
+success onPostBootstrap - 0.104s
+⠀
+info bootstrap finished - 18.945 s
+⠀
+success run queries - 0.183s - 3/3 16.38/s
+warn "typescript" is not installed. Builtin ESLint won't be working on typescript files.
+⠀
+You can now view bobby_dreamer in the browser.
+⠀
+  http://localhost:8000/
+⠀
+View GraphiQL, an in-browser IDE, to explore your site's data and schema
+⠀
+  http://localhost:8000/___graphql
+⠀
+Note that the development build is not optimized.
+To create a production build, use gatsby build
+⠀
+success Building development bundle - 13.618s
+```
+
+You can browse your test site in `http://localhost:8000/`
+
+Sometimes during testing, thing might not work as expected, during those times, *Keep calm and run* `gatsby clean` and then `gatsby develop` again, to see if this worked. 
+```sh 
+PS D:\BigData\08. HTML\Gatsby\lupin\bdv2> gatsby clean
+info Deleting .cache, public
+info Successfully deleted directories
+```
+
+### # Next steps 
+1. [Custom changes](/custom-changes-to-gatsby-theme)
+1. [Changing default theme colors](/changing-gatsby-colors-manually)
+1. [Deploying & Hosting in Firebase](/deploying-and-hosting-gatsby-site-in-firebase)
+
 ### # Advantages / Disadvantages of this theme
 **Advantages**    
 
@@ -230,78 +303,11 @@ Here there is no line breaks `<br>`
   @lekoarts\gatsby-theme-minimal-blog-core
   @lekoarts\gatsby-theme-minimal-blog
   ```
+1. [Gatsby Shadowing](https://www.gatsbyjs.org/docs/themes/shadowing/), sometimes it works and sometimes it doesn't. Its a great feature, by the way. 
 
-**Custom Changes**    
-
-Some of the custom changes, i had made to site are, 
-
-1. To increase number of posts displayed in homepage from default 3. Check the below file, 
-  ```sh
-  lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog-core\src\templates\homepage-query.tsx
-  ```
-1. Spacing updates ( thought there were big gap between content & texts )
-    + Blog post : Increasing space between H4 and previous element    
-      Updated ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\gatsby-plugin-theme-ui\index.js``` - Added ```mt: 4```    
-
-      ```js
-        h4: {
-          ...tailwind.styles.h4,
-          color: `heading`,
-          fontSize: [2, 3, 4],
-          mt: 4,
-        },
-      ```    
-
-    + Home page : Reducing the space between Latest posts and Home projects    
-    ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\components\listing.tsx```
-
-      ```js
-      From = <section sx={{ mb: [5, 6, 7] }} className={className}>
-      To   = <section sx={{ mb: [3, 4, 5] }} className={className}>
-      ```    
-      
-    + Home page : Enabling tags in Latest posts    
-    ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\components\homepage.tsx```
-
-      ```js
-      From = <Listing posts={posts} showTags={false} />
-      To   = <Listing posts={posts} showTags={true} />
-      ```    
-      
-    + Home page : More space between multiple sections in the bottom    
-    ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\components\list.tsx```
-
-      ```js
-      #FROM 
-            ul: { margin: 0, padding: 0},
-            li: { listStyle: `none`, mb: 3 },
-
-      #TO
-            ul: { margin: 0, padding: 0, mb: 4 },
-            li: { listStyle: `none`, mb: 2 },
-      ```    
-
-    + Blog page : Reducing the space between Header and Blog title    
-      Updated ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\components\header.tsx``` 
-
-      ```js
-      From = <header sx={{ mb: [5, 6] }}>
-      To   = <header sx={{ mb: [4, 5] }}>
-      ```    
-
-    + Blog page : Updated space between "Blog" title and list items    
-      Updated ```lupin\bdv2\node_modules\@lekoarts\gatsby-theme-minimal-blog\src\components\blog.tsx```
-
-      ```js 
-      From : <Listing posts={posts} sx={{ mt: [4, 5] }} />
-      To   : <Listing posts={posts} sx={{ mt: [3, 4] }} />
-      ```    
-
-1. Adding 404 page
-
-
+### # Conclusion
  **Does it fit the purpose ?**    
-Yes. I wanted a simple blog site, wanted it to fast, responsive with tagging capabilities for posts
+Yes. I wanted a simple blog site, wanted it to be fast, responsive with tagging & code highlighting capabilities for posts. This particular gatsby theme has all of it and more which i am still exploring. 
 
 Now please go and try it for yourself.    
 
