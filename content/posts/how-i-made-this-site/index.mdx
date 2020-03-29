@@ -1,21 +1,32 @@
 ---
-title: How i made this gatsby site
+title: How i made this site
 date: 2020-03-15
-description: How i made this gatsby site
+description: How i made this site
 tags:
   - web-development
   - gatsbyjs
 slug: "/how-i-made-this-site"
 ---
 
-This process is going to be same as how every software application is made ,there is nothing different. First there was a plan and it was very simple "Make a new site" and then requirements starts pouring in and eventually, i said to myself, it needs to stop and then made a choice and went on with it. 
+One fine day, i decided to make a new version of my site and thats because of my new acquired knowledge and successful little tests. I have a plan to accomplish this but this project is not time bound like nobody is eagerly waiting for it except me. 
+
+The plan is very simple, "I want to build a site" and in the address bar, i don't want to see .html when the page is displayed. I want to make content and maintain consistent look across the site. Content can be stored in .json or markdown or even better in Firebase storage. Most importantly appearance has to be awesome. 
+
+**Solutions**    
+
+1. There are many solutions to this like [.htaccess](https://www.youtube.com/watch?v=-6LyG9I-FPc), but to me better one is running the application in a server like NodeJS. 
+1. To maintain consistency, i can use NodeJS template engines like EJS, PUG, Handlebars, etc... 
+1. Data can be retreived from Firebase / Firestore or Firebase storage, think on pricing, coding and how often will you use this. 
+1. Awesome appearance. hmmm, get a list of things you want to have and prepare of list of essential things/must have sort of. 
+
+Next few months, mostly i have been working on the requirements, you know the *The Awesome Appearance*, actually was alot occupied at work, so mostly i was just making notes and saving links. And one fine day, i decided i should put a end to this and make the site and like all successful Software products, there should be a plan. Honestly to say, i didn't go step by step, i was working parallely in all stages and changing designs and steps based on feasibility. 
 
 This is the thing, **THE SDLC**
 
 | N  | Stages                                   | Activity |
 | -- | ---------------------------------------- | ---- |
-| 1  | [Plan](/things-that-my-new-site-should-have) | I want to build a new site. So started collecting all the things, i want in this new site. There is no stopping me here |
-| 2  | [Define](/epiphany-moment)  | Epiphany Moment. Its going to be a plain content site, nothing else. <-- thats not a dot, its a full stop to everything except content |
+| 1  | [Plan](/things-that-my-new-site-should-have) | Collectors item / All amazing fancy stuff  |
+| 2  | [Define](/epiphany-moment)  | Epiphany Moment. Its going to be a plain content site, nothing else. (PERIOD) |
 | 3  | Design | Well you are here. Next 3 stages are repetitive |
 | 4  | Build | Started to add some content here |
 | 5  | Test | This is a test till break stage. If it breaks, go back to stage (3)/(4) depending on the issue. If it does not break, then you are in UAT/Pre-PROD zone. Do the final testing. If all OK, move to next stage. |
@@ -23,6 +34,7 @@ This is the thing, **THE SDLC**
 | 7  | Maintenance | Add more content |
 
 ### # Steps to make a gatsby site
+1. Install NodeJS 
 
 1. Install Gatsby CLI
   ```sh noLineNumbers
@@ -47,6 +59,7 @@ This is the thing, **THE SDLC**
   cd bdv2 
   gatsby develop
   ```
+   What `gatsby develop` does is, runs the server in the background, enables useful features like live reloading and Gatsby’s GraphQL to query pages & attributes.
 
 1. Visit the site `http://localhost:8000/` in browser of your choice. 
 
@@ -144,7 +157,7 @@ After seeing the site working. First change we will be making is in `gatsby-conf
 #### Changes to home page 
 * Updating the text in homepage banner. Its in a file called `hero.mdx`. To change the banner text (`Hi, I'm Lupin...`), create a folder & file in path mentioned in code header below. 
     ```MD:title=main-folder/src/@lekoarts/gatsby-theme-minimal-blog/texts/hero.mdx
-    <h3>Hello, I'am Sushanth.</h3>
+    <h3>Hello, I am Sushanth.</h3>
 
     I am a mainframe Db2 DBA. 
 
@@ -176,6 +189,7 @@ if its NON-IT, just few words on why i took time to post about it. So, subsectio
 + **TIL**(Today i learned) - Snippets, life lessons, plans, ideas, todos, bucket list, etc. 
 + **music** - Playlist of favourite songs. Why Youtube has this weird issue, if a song video is deleted, in your playlist it shows as deleted video, but don't know what got deleted to add that back. So here i am going to put that list. 
 + **movies** - I used to be a Movie freak, this section will have list of movies i have watched and few sentences on why i like it. 
++ **fan** - People, whom i followed/follow and get inspiration from. According to me they are the best in what they do. 
 
 
 **Steps to add new page**   
