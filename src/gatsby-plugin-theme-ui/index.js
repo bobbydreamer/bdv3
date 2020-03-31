@@ -120,15 +120,15 @@ export default {
     table: {
       width: `100%`,
       my: 4,
-      borderCollapse: `separate`,
+      borderCollapse: `separate`,      
       borderSpacing: 0,
       [[`th`, `td`]]: {
         textAlign: `left`,
         py: `4px`,
-        pr: `4px`,
+        pr: `14px`,
         pl: 0,
-        borderColor: `muted`,
-        borderBottomStyle: `solid`,
+        borderColor: `primary`,
+        borderBottomStyle: `dashed`,
       },
     },
     th: {
