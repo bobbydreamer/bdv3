@@ -140,6 +140,11 @@ export default {
       verticalAlign: `top`,
       borderBottomWidth: `1px`,
     },
+    hr: {
+      borderColor: `primary`,
+      borderBottomStyle: `solid`,
+      borderBottomWidth: `1px`,
+    },    
   },
   text: {
     ...headingStyles,

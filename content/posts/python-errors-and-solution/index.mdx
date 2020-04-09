@@ -1,0 +1,45 @@
+---
+title: Python Errors & Solutions
+date: 2020-04-07
+description: Python errors and solutions bank
+tags: ["python" ,"cloud-shell" ,"profiler", "numpy", "pandas", "e&s"]
+slug: "/python-errors-and-solution"
+---
+
+Events are in reverse chronological order. 
+* [TypeError: 'tuple' object is not callable](#bl1)
+
+___ 
+<a id="bl1"></a>
+
+**Error** : TypeError: 'tuple' object is not callable    
+**Date**  : 03/April/2020    
+
+```
+for i in range(10): 
+    print(i, end =" ") 
+
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+<ipython-input-324-e27c647546fc> in <module>
+----> 1 for i in range(10):
+      2     print(i, end =" ")
+
+TypeError: 'tuple' object is not callable
+```
+
+**Solution** : This took some time to solve. I had used keyword `range` as a variable. 
+```
+print(range)
+
+(201913, 201915)
+```
+
+Solution is `del range` and then the loop worked. 
+```
+for i in range(10): 
+    print(i, end =" ") 
+
+0 1 2 3 4 5 6 7 8 9 
+```
+
