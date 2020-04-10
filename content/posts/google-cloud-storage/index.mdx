@@ -1,0 +1,345 @@
+---
+title: Google Cloud Storage
+date: 2020-04-10
+description: These are things to do 
+tags:
+  - notes 
+  - GCP 
+  - GCS 
+slug: "/google-cloud-storage"
+---
+**Last updated** : 10/April/2020    
+ 
+I am a google fan. I been using gmail for nearly 15years and google is providing 15gb of free space in google drive for nearly 8+ years. With freebies like this i am going to store my personal data as well in google storage and thats how everything started. 
+
+> All the below information are copied from google's official documentation and reproduced here for my quick reference. I haven't copied all information, only commands & texts which i probably might use. 
+
+**Google Cloud Storage official links**    
+* [How-to Guides](https://cloud.google.com/storage/docs/how-to#objects)
+* [Google GSUTIL](https://cloud.google.com/storage/docs/gsutil)
+* [Best practices for Cloud Storage](https://cloud.google.com/storage/docs/best-practices)
+* [Cloud storage pricing](https://cloud.google.com/storage/pricing)
+
+**Storage class**    
+First thing one needs to understand is everything stored in cloud storage is an object. Second thing one needs to understand about is storage class. These classes are categorized based on *How often you access these objects*. By default, everything gets stored in STANDARD class. 
+
+| Class | Storage duration | Description |
+| ----- | ---------------- | ----------- |
+| STANDARD | None | Default. Best for data that is frequently accessed. | 
+| NEARLINE | 30 days | Nearline Storage is ideal for data you plan to read or modify on average once per month or less. | 
+| COLDLINE | 90 days | Coldline Storage is ideal for data you plan to read or modify at most once a quarter. | 
+| ARCHIVE  | 365 days | Archive Storage is the best choice for data that you plan to access less than once a year. |
+
+Additional classes
+* Multi-Regional Storage: Equivalent to Standard Storage, except Multi-Regional Storage can only be used for objects stored in multi-regions or dual-regions.
+
+* Regional Storage: Equivalent to Standard Storage, except Regional Storage can only be used for objects stored in regions.
+
+**Overview of access control**    
+* Uniform(recommended) : Uses Cloud IAM and applies permissions to all the objects contained inside the bucket or groups of objects with common name prefixes. Cloud IAM also allows you to use features that are not available when working with ACLs, such as Cloud IAM Conditions and Cloud Audit Logs.
+
+* Fine-grained: The fine-grained option enables you to use Cloud IAM and Access Control Lists (ACLs) together to manage permissions. ACLs are a legacy access control system for Cloud Storage designed for interoperability with Amazon S3. You can specify access and apply permissions at both the bucket level and per individual object.
+
+> Caution: If you use Cloud IAM and ACLs on the same resource, Cloud Storage grants the broader permission set on the resource. For example, if your Cloud IAM permissions only allow a few users to access my-object, but your ACLs make my-object public, then my-object is exposed to the public. In general, Cloud IAM cannot detect permissions granted by ACLs, and ACLs cannot detect permissions granted by Cloud IAM.
+
+**Uniform bucket-level access**    
+Allows you to uniformly control access to your Cloud Storage resources. When enabled on a bucket, only bucket-level Cloud Identity and Access Management (Cloud IAM) permissions grant access to that bucket and the objects it contains; Access Control Lists (ACLs) are disabled and access granted by ACLs is revoked. 
+
+After you enable uniform bucket-level access, you can reverse your decision for 90 days and cannot disable afterwards.
+
+Certain Google Cloud services that export to Cloud Storage cannot export to buckets that have uniform bucket-level access enabled. 
+These services include: Cloud Logging, Cloud Audit Logs, and Datastore.
+
+**Object ACL permission & Cloud IAM role**    
+* READER - Storage Legacy Object Reader (roles/storage.legacyObjectReader)
+* OWNER -	Storage Legacy Object Owner (roles/storage.legacyObjectOwner)
+
+**Creating Storage Buckets**    
+
+```sh
+-- Full syntax
+gsutil mb -p [PROJECT_ID] -c [STORAGE_CLASS] -l [BUCKET_LOCATION] -b on gs://[BUCKET_NAME]/
+
+-- Creating a bucket and going with all default options
+gsutil mb gs://[BUCKET_NAME]/
+
+-- Storage class as multi-regional
+gsutil mb -c multi_regional gs://mybucket-<unique name>/
+
+-- Uniform bucket level access is turned off. Default
+gsutil mb -b off gs://bucket-with-acls
+
+-- Uniform bucket level access is turned on.
+gsutil mb -b on gs://bucket-with-no-acls
+
+-- Uniform bucket level access turned on with bucket location specified. 
+gsutil mb -b on -l us-east1 gs://my-awesome-bucket/
+```
+
+**Listing Buckets & Objects**    
+
+```sh
+-- Listing all buckets
+gsutil ls
+
+-- -r : recursively list entire directory tree but difference in two commands is in the order they are displayed. 
+-- Second one does flat listing
+gsutil ls -r gs://bucket
+gsutil ls -r gs://bucket/**
+
+-- -l : You get additional information like object size, creation time stamp and along with the total count 
+-- and sum of sizes of all matching objects. Add -h to -l as it will show sizes in readable form like MB, GB.
+gsutil ls -l gs://bucket/*.txt
+
+-- -L : Will dispaly with all metadata information for each object like storage-class, 
+-- versioning and ACL info.(output will be big)
+gsutil ls -L -b gs://[BUCKET_NAME]/
+
+-- Checking storage class of objects in the bucket 
+gsutil ls -Lr gs://mybucket-<unique name> | more
+```
+
+**Bucket size**    
+
+Displays the amount of space (in bytes) being used by the objects. If bucket is bigger might take lots of time
+```sh
+-- -s(only grand total)
+gsutil du -s gs://[BUCKET_NAME]/
+
+-- -c(grand total at the end), -h(size in readable format)
+gsutil du -ch gs://bucketname
+```
+
+**Changing object storage classes**    
+```sh
+gsutil rewrite -s [STORAGE_CLASS] gs://[PATH_TO_OBJECT]
+```
+
+**Object metadata**    
+```sh 
+-- Viewing object metadata
+gsutil stat gs://[BUCKET_NAME]/[OBJECT_NAME]
+
+-- Editing object metadata
+gsutil setmeta -h "[METADATA_KEY]:[METADATA_VALUE]" gs://[BUCKET_NAME]/[OBJECT_NAME]
+```
+
+**Copying objects**    
+
+```sh
+-- -m : performs a parallel (multi-threaded/multi-processing) copy from local directory to bucket
+gsutil -m cp -r endpointslambda gs://mybucket-<unique name>
+
+-- -r : copies entire directory tree
+gsutil cp -r gs://[SOURCE_BUCKET]/* gs://[DESTINATION_BUCKET]
+
+-- -I : You can pass a list of URLs (one per line) to copy on stdin instead of as command line arguments by using the -I option.
+some_program | gsutil -m cp -I gs://my-bucket
+
+-- Copying a file with different storage class than buckets default storage class
+-- -s : Storage class of destination 
+gsutil cp -s nearline ghcn/ghcn_on_bq.ipynb gs://mybucket-<unique name>
+```
+
+**Parallel Downloads**    
+Suppose there are folders like this in cloud, 
+```
+gs://my-bucket/data/result_set_01/
+gs://my-bucket/data/result_set_02/
+...
+gs://my-bucket/data/result_set_99/
+
+```
+
+You can run like this to download parallely(this can run on multiple machines & dir could be a shared directory as well)
+```sh 
+gsutil -m cp -r gs://my-bucket/data/result_set_[0-3]* dir
+gsutil -m cp -r gs://my-bucket/data/result_set_[4-6]* dir
+gsutil -m cp -r gs://my-bucket/data/result_set_[7-9]* dir
+```
+
+**Delete objects**    
+
+```sh
+-- Deletes bucket only if bucket is empty(safer)
+gsutil rb gs://[SOURCE_BUCKET]
+
+-- -r : Recursively delete all objects(versions) and finally deletes the bucket(risky)
+-- -m : perform parallel (multi-threaded/multi-processing) removes
+gsutil -m rm -r gs://[SOURCE_BUCKET]
+
+-- Delete all objects(versions) keep bucket
+gsutil rm -a gs://[SOURCE_BUCKET]
+```
+
+**Moving & Renaming object**    
+This can be used for renaming objects as well. The gsutil mv command does not perform a single atomic operation. Rather, it performs a copy from source to destination followed by removing the source for each object.
+```sh 
+gsutil mv gs://[SOURCE_BUCKET_NAME]/[SOURCE_OBJECT_NAME] gs://[DESTINATION_BUCKET_NAME]/[DESTINATION_OBJECT_NAME]
+```
+
+**Synchronize local changes with the bucket**    
+```sh 
+-- -m : To perform a parallel (multi-threaded/multi-processing) copy
+-- -r : recurse into directories 
+-- -d : (caution) It mirrors source & target. So if any files are deleted in the source after running 
+-- with this option it will be deleted in the target as well(so source & targets look same).
+gsutil -m rsync -d -r endpointslambda gs://mybucket-<unique name>/endpointslambda
+```
+
+**Changing the default storage class of a bucket**    
+When you upload an object to the bucket, if you don't specify a storage class for the object, the object is assigned the bucket's default storage class.
+```sh
+gsutil defstorageclass set [STORAGE_CLASS] gs://[BUCKET_NAME]
+```
+
+**Making individual objects publicly readable**    
+> Note :  If you have uniform bucket-level access enabled on your bucket, you cannot use below command as its ACL
+
+```
+gsutil acl ch -u AllUsers:R gs://[BUCKET_NAME]/[OBJECT_NAME]
+```
+
+**Making all objects in a bucket publicly readable**    
+```
+gsutil iam ch allUsers:objectViewer gs://[BUCKET_NAME]
+```
+
+**Remove public access**    
+```
+gsutil iam ch -d allUsers:objectViewer gs://my-awesome-bucket
+```
+
+**Accessing public data**    
+In public datasets, you can usually list files and copy specific files to local(eg:- Google public bucket : `gcp-public-data-landsat`)
+```
+gsutil ls -r gs://gcp-public-data-landsat/LC08/PRE/063/046/LC80630462016*
+gsutil cp gs://gcp-public-data-landsat/LC08/PRE/063/046/LC80630462016136LGN00/LC80630462016136LGN00_B11.TIF .
+```
+
+**Using Cloud IAM permissions**    
+```sh
+gsutil iam ch [MEMBER_TYPE]:[MEMBER_NAME]:[IAM_ROLE] gs://[BUCKET_NAME]
+```
+Where:    
+* [MEMBER_TYPE] is the type of member to which you are granting bucket access. For example, user.
+    Member types : 
+    * Google accounts and Google groups represent two general types, while allAuthenticatedUsers and allUsers are two specialized types.
+    * Cloud IAM supports the following member types, which can be applied specifically to your Cloud Storage bucket Cloud IAM policies:
+        - projectOwner:[PROJECT_ID]
+        - projectEditor:[PROJECT_ID]
+        - projectViewer:[PROJECT_ID]
+* [MEMBER_NAME] is the name of the member to which you are granting bucket access. For example, jane@gmail.com.
+* [IAM_ROLE] is the IAM role you are granting to the member. For example, roles/storage.objectCreator.
+* [BUCKET_NAME] is the name of the bucket you are granting the member access to. For example, my-bucket.
+
+```sh 
+-- Give a specific email address permission to read and write objects in your bucket
+gsutil iam ch user:jane@gmail.com:objectCreator,objectViewer gs://my-awesome-bucket
+
+-- Remove this permission, use the command
+gsutil iam ch -d user:jane@gmail.com:objectCreator,objectViewer gs://my-awesome-bucket
+
+-- Viewing the Cloud IAM policy for a bucket
+gsutil iam get gs://[BUCKET_NAME]
+
+-- Removing a member from a bucket-level policy
+gsutil iam ch -d [MEMBER_TYPE]:[MEMBER_NAME] gs://[BUCKET_NAME]
+```
+
+> Note : Important: It typically takes about a minute for revoking access to take effect. In some cases it may take longer. If you remove a user's access, this change is immediately reflected in the metadata; however, the user may still have access to the object for a short period of time.
+
+**Storage Pricing**    
+
+Storage location wise cost    
+
+```sh {5}
+US(multi-region)   - Standard($0.026), Nearline($0.010)
+EU(multi-region)   - Standard($0.026), Nearline($0.010)
+Asia(multi-region) - Standard($0.026), Nearline($0.010)
+
+Standard($0.020), Nearline($0.010) : Iowa(us-central1), South Carolina(us-east1), Oregon(us-west1)
+Standard($0.023), Nearline($0.013) : Northern Viginia(us-east4), Salt Lake City(us-west3), Los Angeles(us-west2)
+Standard($0.023), Nearline($0.016) : Mumbai(asia-south1)
+```
+
+**Cloud Storage Free limits**    
+
+| Resource | Monthly Free Usage Limits |
+| -------- | ------------------------- |
+| Standard Storage | 5 GB-months |
+| Class A Operations | 5,000 |
+| Class B Operations | 50,000 |
+| Network Egress | 1 GB from North America to each GCP egress destination (Australia and China excluded) |
+
+Cloud Storage Always Free quotas apply to usage in US-WEST1, US-CENTRAL1, and US-EAST1 regions.
+
+**General network usage**    
+
+* Ingress : Free 
+* Egress
+
+| Monthly Usage | $ Per GB | Egress to destinations |
+| ------------- | -------- | ---------------------- |
+| 1-10TB | $0.11 | Egress to Worldwide Destinations (excluding Asia & Australia), Egress to Asia Destinations (excluding China, but including Hong Kong) | 
+| 1-10TB | $0.18 | Egress to Australia Destinations |
+| 1-10TB | $0.22 | Egress to China Destinations (excluding Hong Kong) | 
+
+Other than above, you are charged for operations you do, An operation is an action that makes changes to or retrieves information about buckets and objects in Cloud Storage. Operations are divided into three categories: Class A, Class B, and free. Billing rates are per 10,000 operations.
+
+| Storage | Standard | Nearline | Coldline | Archive | 
+| ------- | -------- | -------- | -------- | ------- |
+| Class A | $0.05    | $0.10    | $0.10    | $0.50   |
+| Class B | $0.04    | $0.01    | $0.05    | $0.50   |
+
+**Operations that fall into each class**    
+
+* Class A
+    ```
+    storage.*.insert1, storage.*.patch, storage.*.update, storage.*.setIamPolicy, storage.buckets.list
+    , storage.buckets.lockRetentionPolicy, storage.notifications.delete, storage.objects.compose
+    , storage.objects.copy, storage.objects.list, storage.objects.rewrite, storage.objects.watchAll
+    ```
+
+* Class B
+    ```
+    storage.*.get, storage.*.getIamPolicy, storage.*.testIamPermissions
+    , storage.*AccessControls.list, storage.notifications.list, Each object notification
+    ```
+    
+* Free 
+    ```
+    storage.channels.stop, storage.buckets.delete, storage.objects.delete
+    ```
+
+**Retrieval and early deletion**    
+There are charges for retreiving data or metadata from Nearline Storage, Coldline Storage, and Archive Storage as they are intended for storing infrequently accessed data.
+
+### # My take
+
+1. Keep it simple 
+1. Dont give too much public access 
+1. Keep a watch on the pricing 
+1. Before starting, plan on setting some standards for buckets, naming conventions, file types, content types and etc..
+1. You don't need to dump all the data to one single project, if you need you can have a separation there. 
+
+```sh
+-- Create a public bucket
+gsutil mb -c STANDARD -l us-west1 -b on gs://bobbydreamer-com-technicals
+
+-- Give public access as viewer
+gsutil iam ch allUsers:objectViewer gs://bobbydreamer-com-technicals
+
+-- Copying file to bucket
+bobby_dreamer@cloudshell:~ (bobbydreamer-196820)$ gsutil -m cp bse_daily_365d.csv gs://bobbydreamer-com-technicals
+Copying file://bse_daily_365d.csv [Content-Type=text/csv]...
+- [1/1 files][ 69.3 MiB/ 69.3 MiB] 100% Done
+Operation completed over 1 objects/69.3 MiB.
+```
+
+### # Resources 
+* [Using bucket labels](https://cloud.google.com/storage/docs/using-bucket-labels)
+* [Object Lifecycle Management](https://cloud.google.com/storage/docs/lifecycle)
+* [Using retention policies and Bucket Lock](https://cloud.google.com/storage/docs/using-bucket-lock)
+* [Using object holds](https://cloud.google.com/storage/docs/holding-objects)
+* [Cloud storage pricing](https://cloud.google.com/storage/pricing)
