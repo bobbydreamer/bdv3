@@ -3,6 +3,19 @@ title: Today I Learned
 slug: "/til"
 ---
 
+**Date** : 17/April/2020    
+
+Learnt the below technique in python to show the line which caused the exception. By default, when you handle exception, it doesn't show the line number. Now, adding this to all my programs.
+```py {6}
+    try : 
+
+    except Exception as e:
+        print('Failed due to error')        
+        print('Exception : ',e)
+        print(traceback.format_exc())
+```
+___ 
+
 **Date** : 08/April/2020    
 
 Problem being a computer programmer is, your life is so perfect(you think), so you create a problem for yourself and work on solving that problem. It gives a good feeling when you solve it. But its entirely waste of time at some point you might wonder. Problem never existed.  

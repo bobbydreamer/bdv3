@@ -330,7 +330,7 @@ Here are some of the attempts to solve the above performance problems,
 
     So now most of my code uses this. 
 
-3. **Converting to dataframe**. Looks like creating a new dataframe is an expensive process. When i stepback and think about the flow of program, this function is called in a loop and for each company a new dataframe is being created and if this takes this much time for single company, obviously whole program is going to be slow. So my thought was, what-if i keep everything in numpy itself, and see how it goes. 
+3. **Converting to dataframe**. Looks like creating a new dataframe is an expensive process. When i stepback and think about the flow of program, this function is called in a *loop* and for each company a new dataframe is being created and if this takes this much time for single company, obviously whole program is going to be slow. So my thought was, what-if i keep everything in numpy itself, and see how it goes. 
 
     There are two things to solve here 
     * Dataframe (Line no.165)
@@ -614,9 +614,27 @@ Issue faced during full execution using numpy,
     * Finally, what i did is, write an intermediate result file after processing 500 companies and then reinitialize the variables which is holding that data. 
 
 ### # Things to do next
-1. *Going forward, should i write only numpy programs* ?     
-    It depends, to a certain extent. For large processing(laptop level), yes. Also, got to remember with too complex codes, maintainence will hit hard. Pandas are easy to understand than numpy. 
-1. If any big program is running slow, profiling is the next thing you should do. 
+
+*Going forward, should i write only numpy programs* ?     
+
+No. It depends, to a certain extent. What am i doing here, i am calling weekly_trend_analysis() in loop passing last 1 yr daily data of each company as argument and function processes it and finally returns 1yr weekly data of that company and this process repeats for all companies. 
+* Doing this via Pandas takes 1h 26min
+* Via Numpy takes 7min 47s
+
+Instead of passing daily data of each company in loop, if i pass entire dataset to the function with all the companies via pandas, it takes only Wall time: 1min 22s. 
+
+So, pandas are good as well in processing large datasets. We got 2 enemies here, they should be avoided at all cost, 
+
+1. Looping 
+1. Thought process that gets you to write a loop.
+
+Couple of other points to remember, 
+
+1. With complex codes, maintainence will hit hard. Pandas are easy to understand than numpy. 
+2. If you really want to scale, it easy to convert from Pandas to PySpark, i have done it. (Easy meaning, you have to sit for couple of weeks and do it, but doable). 
+3. Numpy is very fast with looping itself it got the elapsed time down from 1hr 26min to 7mins, what i didn't like about it is the memory error, but the problem is with my data, i wanted multiple datatypes, so it had to change everything to object types. 
+
+So finally, whats best, both are, but its the thought process thats going to save time.
 
 ### # Related articles
 1. [Running python line_profiler in cloud shell](../python-profiling)

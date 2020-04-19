@@ -11,7 +11,44 @@ slug: "/python-errors-and-solution"
 ---
 
 Events are in reverse chronological order. 
+* [TypeError: unorderable types: datetime.date() > str()](#bl2)
 * [TypeError: 'tuple' object is not callable](#bl1)
+
+___ 
+<a id="bl2"></a>
+
+**Error** : TypeError: unorderable types: datetime.date() > str()    
+**Date**  : 17/April/2020    
+
+When executing the below line in pandas, got that error.
+```py
+df_temp[df_temp['ts'] > dt_3d]
+
+# Error : 
+# TypeError: unorderable types: datetime.date() > str()
+```
+
+**Analysis**     
+
+```py
+print(type(df_temp['ts']))    # <class 'pandas.core.series.Series'>
+print(type(df_temp['ts'][0])) # <class 'datetime.date'>
+print(type(dt_3d))            # <class 'str'>
+```
+
+Update 1 : Updated like below, still got an error. 
+```py
+df_temp[df_temp['ts'] > pd.to_datetime(dt_3d)]
+
+# Error : 
+# TypeError: Cannot compare type 'Timestamp' with type 'date'
+```
+
+**Solution** : 
+
+Update 2 : `df_temp[df_temp['ts'] > pd.to_datetime(dt_3d).date()]`    
+
+**Worked**
 
 ___ 
 <a id="bl1"></a>
@@ -19,7 +56,7 @@ ___
 **Error** : TypeError: 'tuple' object is not callable    
 **Date**  : 03/April/2020    
 
-```
+```py
 for i in range(10): 
     print(i, end =" ") 
 
@@ -33,17 +70,18 @@ TypeError: 'tuple' object is not callable
 ```
 
 **Solution** : This took some time to solve. I had used keyword `range` as a variable. 
-```
+```py
 print(range)
 
 (201913, 201915)
 ```
 
 Solution is `del range` and then the loop worked. 
-```
+```py
 for i in range(10): 
     print(i, end =" ") 
 
 0 1 2 3 4 5 6 7 8 9 
 ```
 
+ 
