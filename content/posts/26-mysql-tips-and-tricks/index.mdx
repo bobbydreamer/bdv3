@@ -1,0 +1,175 @@
+---
+title: MySQL Tips and Tricks
+date: 2020-04-26
+description: MySQL Tips and Tricks that worked for me
+tags:
+  - mysql
+slug: "/26-mysql-tips-and-tricks"
+---
+
+**Last updated** : 26/April/2020     
+
+Events are in reverse chronological order. 
+* 2020/04/26 - [on duplicate update](#bl4)
+* 2020/04/26 - [Row change timestamp](#bl3)
+* 2020/04/26 - [Running MySQL script from windows prompt](#bl2)
+* 2020/04/26 - [Loading mysql tables](#bl1)
+___ 
+<a id="bl4"></a>
+
+##### on duplicate update
+
+```sql {25-26}
+drop table if exists test_abc;
+create table test_abc(
+lastUpdated timestamp not null DEFAULT CURRENT_timestamp ON UPDATE CURRENT_timestamp
+,name   VARCHAR(100) not null default ''
+,place  VARCHAR(100) not null default ''
+,animal VARCHAR(100) not null default ''
+,things VARCHAR(100) not null default ''
+);
+create unique index uix1 on test_abc(name);
+
+insert ignore into test_abc(name, place, animal, things) values
+	('Sushanth', 'Chennai', 'Human', 'Sony Vaio user');
+insert ignore into test_abc(name, place, animal, things) values
+	('Bobby', 'Chennai', 'Human', 'Windows user');
+
+select * from test_abc;
++---------------------+----------+---------+--------+----------------+
+| lastUpdated         | name     | place   | animal | things         |
++---------------------+----------+---------+--------+----------------+
+| 2020-04-26 12:14:13 | Bobby    | Chennai | Human  | Windows user   |
+| 2020-04-26 12:14:13 | Sushanth | Chennai | Human  | Sony Vaio user |
++---------------------+----------+---------+--------+----------------+
+2 rows in set (0.00 sec)
+
+insert into test_abc(name, place, animal, things) values('Bobby', 'Earth', 'Human', 'Windows user')
+       on duplicate key update place = values(place);
+Query OK, 2 rows affected (0.13 sec)
+
+select * from test_abc;
++---------------------+----------+---------+--------+----------------+
+| lastUpdated         | name     | place   | animal | things         |
++---------------------+----------+---------+--------+----------------+
+| 2020-04-26 12:14:29 | Bobby    | Earth   | Human  | Windows user   |
+| 2020-04-26 12:14:13 | Sushanth | Chennai | Human  | Sony Vaio user |
++---------------------+----------+---------+--------+----------------+
+2 rows in set (0.00 sec)
+
+drop table test_abc;
+```
+>  VALUES(col_name) in the ON DUPLICATE KEY UPDATE clause refers to the value of col_name that would be inserted, had no duplicate-key conflict occurred
+
+Above when it says, "2 rows affected", its not two rows, its just value 2, for example,    
+
+* if 0, had come, it means nothing is udpated
+* 1 means row is inserted
+* 2 means row is updated.     
+
+Its confusing a bit here but it is how it is.
+
+___ 
+<a id="bl3"></a>
+
+##### Row change timestamp
+
+Represents timestamp, when the row was last changed.
+```sql {3,20-21,30}
+drop table if exists test_abc;
+create table test_abc(
+lastUpdated timestamp not null DEFAULT CURRENT_timestamp ON UPDATE CURRENT_timestamp
+,name   VARCHAR(100) not null default ''
+,place  VARCHAR(100) not null default ''
+,animal VARCHAR(100) not null default ''
+,things VARCHAR(100) not null default ''
+);
+create unique index uix1 on test_abc(name);
+
+insert ignore into test_abc(name, place, animal, things) values
+	('Sushanth', 'Chennai', 'Human', 'Sony Vaio user');
+insert ignore into test_abc(name, place, animal, things) values
+	('Bobby', 'Chennai', 'Human', 'Windows user');
+
+select * from test_abc;
++---------------------+----------+---------+--------+----------------+
+| lastUpdated         | name     | place   | animal | things         |
++---------------------+----------+---------+--------+----------------+
+| 2020-04-26 11:57:30 | Bobby    | Chennai | Human  | Windows user   |
+| 2020-04-26 11:57:30 | Sushanth | Chennai | Human  | Sony Vaio user |
++---------------------+----------+---------+--------+----------------+
+
+update test_abc SET place = 'Earth' where name = 'Bobby';
+
+select * from test_abc;
++---------------------+----------+---------+--------+----------------+
+| lastUpdated         | name     | place   | animal | things         |
++---------------------+----------+---------+--------+----------------+
+| 2020-04-26 11:57:35 | Bobby    | Earth   | Human  | Windows user   |
+| 2020-04-26 11:57:30 | Sushanth | Chennai | Human  | Sony Vaio user |
++---------------------+----------+---------+--------+----------------+
+2 rows in set (0.00 sec)
+
+drop table test_abc;
+```
+___ 
+<a id="bl2"></a>
+
+##### Running MySQL script from windows prompt
+
+Below is the load card to truncate and load data into mySQL table
+```sql:title=LR-N_TI.sql
+truncate table N_TI
+LOAD DATA INFILE 'D:/BigData/12. Python/data/TI.csv'
+IGNORE INTO TABLE N_TI
+COLUMNS TERMINATED BY '|' LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(ts, unitName, TI180d, p180d, TI3d, p3d, TI5d, p5d, TI15d, p15d, TI30d, p30d)
+;
+```
+
+Below windows batch file to execute the above load control card,
+```sh:title=dataLoads.bat
+mysql -uroot -predpill test < ../data/loadcards/LR-N_TI.sql > ../data/outputs/LR-N_TI.out
+```
+
+**FYI** : *Load card* - Its a mainframe term for Db2 Load control card 
+
+___ 
+<a id="bl1"></a>
+
+##### Loading mysql tables
+
+```sql
+LOAD DATA INFILE 'D:/BigData/12. Python/data/TI.csv'
+IGNORE INTO TABLE N_TI
+COLUMNS TERMINATED BY '|' LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(ts, unitName, TI180d, p180d, TI3d, p3d, TI5d, p5d, TI15d, p15d, TI30d, p30d)
+;
+```
+Line number and description,      
+
+1. Input file path, its Windows, so remember its a forward slash
+1. `IGNORE` ignores duplicates while loading into table 
+1. Columns are terminated by pipe symbol(`|`) rather than comma(`,`) as unitName can contain commas. 
+1. Ignore the header line 
+1. Table Column names as they appear in the delimited file 
+
+**Updating values while loading the table**      
+
+`SET` clause can be used for this purpose, all MySQL functions can be used.
+```sql {6}
+LOAD DATA INFILE 'D:/BigData/12. Python/data/TI.csv'
+IGNORE INTO TABLE N_TI
+COLUMNS TERMINATED BY '|' LINES TERMINATED BY '\r\n'
+IGNORE 1 LINES
+(ts, @var_unitName, @var_status, TI180d, p180d, TI3d, p3d, TI5d, p5d, TI15d, p15d, TI30d, p30d) 
+SET
+ts = str_to_date(@ts, '%d-%b-%Y')
+, unitName = trim(@var_unitName)
+, status = if(@var_status = '',null,@var_status);
+```
+
+
+### Thanks
