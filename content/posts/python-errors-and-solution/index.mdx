@@ -12,8 +12,24 @@ slug: "/python-errors-and-solution"
 **Last updated** : 17/April/2020     
 
 Events are in reverse chronological order. 
-* [TypeError: unorderable types: datetime.date() > str()](#bl2)
-* [TypeError: 'tuple' object is not callable](#bl1)
+* 2020/07/06 - [tuple indices must be integers or slices, not str](#bl3)
+* 2020/04/17 - [TypeError: unorderable types: datetime.date() > str()](#bl2)
+* 2020/04/03 - [TypeError: 'tuple' object is not callable](#bl1)
+
+___ 
+<a id="bl3"></a>
+
+**Error** : tuple indices must be integers or slices, not str
+
+When looping dataframe trying to get a value from dataframe cell, got the error. 
+```py
+row[rd_Qcolname] 
+```
+
+**Solution** : 
+```py
+getattr(row, rd_Qcolname)
+```
 
 ___ 
 <a id="bl2"></a>
@@ -55,7 +71,6 @@ ___
 <a id="bl1"></a>
 
 **Error** : TypeError: 'tuple' object is not callable    
-**Date**  : 03/April/2020    
 
 ```py
 for i in range(10): 
