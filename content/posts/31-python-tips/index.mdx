@@ -1,0 +1,126 @@
+---
+title: Python tips
+date: 2020-07-06
+description: Tips to improve python programming skills
+tags:
+  - python
+  - pandas
+slug: "/31-python-tips"
+---
+
+**Last updated** : 06/July/2020     
+
+Events are in reverse chronological order. 
+* 2020/06/06 - [Convert two arrays to dictionary](#pt05)
+* 2020/06/12 - [View specific row by index ](#pt04)
+* 2020/06/20 - [Read all columns into pandas as object](#pt03)
+* 2020/07/03 - [Common pandas options](#pt02)
+* 2020/07/06 - [Display all columns of specific datatype](#pt01)
+* 2020/04/11 - [Saving memory when reading CSV file in pandas](../23-pytip-saving-memory-when-reading-csv-file-in-pandas)
+
+___
+<br/>
+<a id="pt05"></a>
+
+##### Convert two arrays to dictionary
+```py
+keys = ['a', 'b', 'c']
+values = [1, 2, 3]
+dictionary = dict(zip(keys, values))
+print(dictionary)
+
+# output
+{'b': 2, 'a': 1, 'c': 3}
+
+```    
+___
+<br/> 
+<a id="pt04"></a>
+
+##### View specific row by index     
+
+```py
+df_joined.loc[[28]]
+df_joined.iloc[[27]]
+```    
+___
+<br/>
+<a id="pt03"></a>
+
+##### Read all columns into pandas as object
+```py
+df = pd.read_csv(osfp_file, sep='|', names=all_cols, usecols=use_cols ,skip_blank_lines=True, dtype=object)
+```
+___ 
+<br/>
+
+<a id="pt02"></a>
+
+##### Common pandas options
+```py
+pd.set_option('display.max_columns', None)
+pd.set_option('display.max_colwidth', 200)
+
+# To display all rows
+pd.set_option('display.max_rows', None) 
+
+# Setting limit to display max 100 rows
+pd.set_option('display.max_rows', 100)
+
+# When there are lots of columns (by default 100+) then df.info() wouldn't show all the columns, 
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 3984 entries, 0 to 3983
+Columns: 114 entries, name to process
+dtypes: datetime64[ns](10), float64(68), int64(1), object(35)
+memory usage: 2.9+ MB
+
+# When that happens, you can use, 
+df.info(verbose=True, null_counts=True)
+
+# What option sets that default 100 is this
+pd.options.display.max_info_columns 
+
+print('Max columns in display setting: ', pd.get_option('max_columns'))
+```
+___ 
+<br/> 
+<a id="pt01"></a>
+
+##### Display all columns of specific datatype
+
+If you have a column naming convention, like in column name itself we can identify datatype, you can use below method to get those columns. Here we are trying to get date columns, 
+
+**Method 1**    
+
+```py
+[col for col in df_companies.columns if 'date' in col.lower()]
+```
+
+**Method 2**    
+
+```py
+df_companies['lastraded'].dtypes
+# Output:
+dtype('<M8[ns]')
+
+df_companies.dtypes[df_companies.dtypes=='<M8[ns]']
+
+# Output:
+lastraded       datetime64[ns]
+QresultDate     datetime64[ns]
+PLResultDate    datetime64[ns]
+BSResultDate    datetime64[ns]
+RResultDate     datetime64[ns]
+CFResultDate    datetime64[ns]
+YRResultDate    datetime64[ns]
+HiDate          datetime64[ns]
+LoDate          datetime64[ns]
+TVDate          datetime64[ns]
+dtype: object
+```
+
+**Method 3**    
+
+```py
+dtCols = list(df_companies.select_dtypes(include=['datetime']).columns)
+```
