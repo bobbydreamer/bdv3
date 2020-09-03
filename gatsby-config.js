@@ -33,8 +33,8 @@ module.exports = {
             slug: `/music`,
           },
           {
-            title: `movies`,
-            slug: `/movies`,
+            title: `iRevere`,
+            slug: `/irevere`,
           },
         ],
         externalLinks: [

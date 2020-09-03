@@ -1,6 +1,6 @@
 ---
 title: MySQL Tips and Tricks
-date: 2020-04-26
+date: 2020-07-06
 description: MySQL Tips and Tricks that worked for me
 tags:
   - mysql
@@ -55,7 +55,7 @@ mysql> show processlist;
 +------+-----------------+-----------------+------+---------+--------+------------------------+------------------+
 2 rows in set (0.00 sec)
 ```
-___ 
+ 
 <a id="bl9"></a>
 
 <br/>
@@ -105,7 +105,7 @@ ALTER USER 'snake_charmer'@'localhost' IDENTIFIED WITH mysql_native_password BY 
 GRANT ALL PRIVILEGES ON TEST.* To 'snake_charmer'@'localhost' ;
 ```
 
-___ 
+ 
 <a id="bl8"></a>
 <br/>
 
@@ -137,7 +137,7 @@ explain select * from actor where actor_id=5 ;
 
 ```
 
-___ 
+ 
 <a id="bl7"></a>
 <br/>
 
@@ -222,7 +222,7 @@ mysql> select id, name, brand_id, category_id, usb from products1 where usb > -1
 2 rows in set (0.00 sec)
 ```
 
-___ 
+ 
 <a id="bl6"></a>
 <br/>
 
@@ -272,7 +272,7 @@ mysql> SELECT * FROM actor LIMIT 5 offset 5;
 5 rows in set (0.00 sec)
 ```
 
-___ 
+ 
 <a id="bl5"></a>
 <br/>
 
@@ -302,7 +302,7 @@ last_update: 2016-12-02 00:00:00
 1 row in set (0.00 sec)
 ```
 
-___ 
+ 
 <a id="bl4"></a>
 <br/>
 
@@ -358,7 +358,7 @@ Above when it says, "2 rows affected", its not two rows, its just value 2, for e
 
 Its confusing a bit here but it is how it is.
 
-___ 
+ 
 <a id="bl3"></a>
 <br/>
 
@@ -402,7 +402,7 @@ select * from test_abc;
 
 drop table test_abc;
 ```
-___ 
+ 
 <a id="bl2"></a>
 <br/>
 
@@ -426,7 +426,7 @@ mysql -uroot -predpill test < ../data/loadcards/LR-N_TI.sql > ../data/outputs/LR
 
 **FYI** : *Load card* - Its a mainframe term meaning a member(equivalent to file in folder) containing load statement.
 
-___ 
+ 
 <a id="bl1"></a>
 <br/>
 

@@ -1,6 +1,6 @@
 ---
 title: Creating pandas dataframes
-date: 2020-07-07
+date: 2020-08-08
 description: Different ways of creating dataframes in python
 tags:
   - python
@@ -22,8 +22,9 @@ Here are few ways of creating new dataframes and generating data.
 1. [pd.Series to dataframe ](#df6)
 1. [8x4 dataframe with some random data ](#df7)
 1. [Single column list of alphabets](#df8)
-1. [dictionary to Dataframe ](#df9)
-    
+1. [Dictionary to Dataframe ](#df9)
+1. [Raw text to dataframe](#df10)    
+1. [Dummy data : Generating a very big table](#df11)
 ___ 
 
 <br/>
@@ -337,4 +338,79 @@ Output :
 
 ```
 <br/>
+<a id="df10"></a>
 
+##### Raw text to dataframe
+
+```python
+import sys
+if sys.version_info[0] < 3:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+import pandas as pd
+DF1 = StringIO("""
+Date       Fruit  Num  Color 
+2013-11-24 Banana 22.1 Yellow
+2013-11-24 Orange  8.6 Orange
+2013-11-24 Apple   7.6 Green
+2013-11-24 Celery 10.2 Green
+""")
+DF2 = StringIO("""
+Date       Fruit  Num  Color 
+2013-11-24 Banana 22.1 Yellow
+2013-11-24 Orange  8.6 Orange
+2013-11-24 Apple   7.6 Green
+2013-11-24 Celery 10.2 Green
+2013-11-25 Apple  22.1 Red
+2013-11-25 Orange  8.6 Orange
+""")
+df1 = pd.read_csv(DF1, sep='\s+')
+df2 = pd.read_csv(DF2, sep='\s+')
+
+dfs_dictionary = {'DF1':df1,'DF2':df2}
+df=pd.concat(dfs_dictionary)
+
+print(tabulate(df, headers='keys', tablefmt='psql', showindex=True))
+# Output
++------------+------------+---------+-------+---------+
+|            | Date       | Fruit   |   Num | Color   |
+|------------+------------+---------+-------+---------|
+| ('DF1', 0) | 2013-11-24 | Banana  |  22.1 | Yellow  |
+| ('DF1', 1) | 2013-11-24 | Orange  |   8.6 | Orange  |
+| ('DF1', 2) | 2013-11-24 | Apple   |   7.6 | Green   |
+| ('DF1', 3) | 2013-11-24 | Celery  |  10.2 | Green   |
+| ('DF2', 0) | 2013-11-24 | Banana  |  22.1 | Yellow  |
+| ('DF2', 1) | 2013-11-24 | Orange  |   8.6 | Orange  |
+| ('DF2', 2) | 2013-11-24 | Apple   |   7.6 | Green   |
+| ('DF2', 3) | 2013-11-24 | Celery  |  10.2 | Green   |
+| ('DF2', 4) | 2013-11-25 | Apple   |  22.1 | Red     |
+| ('DF2', 5) | 2013-11-25 | Orange  |   8.6 | Orange  |
++------------+------------+---------+-------+---------+
+
+```
+
+<br/>
+<a id="df10"></a>
+
+##### Dummy data : Generating a very big table
+Not sure how or when this would be useful, but you could do this as well. 
+
+```python 
+import numpy as np
+
+# Add more zeros, you can hit memory limit
+df = pd.DataFrame(np.random.randn(6000, 5000))
+
+df.shape
+# Output 
+(6000, 5000)
+
+df.info()
+# Output 
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 6000 entries, 0 to 5999
+Columns: 5000 entries, 0 to 4999
+dtypes: float64(5000)
+memory usage: 228.9 MB
+```
