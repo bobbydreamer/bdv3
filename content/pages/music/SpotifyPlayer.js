@@ -29,6 +29,7 @@ class SpotifyPlayer extends Component {
 
   render() {
     // const { uri, view, theme } = this.props
+    const { uri } = this.props
     let { size } = this.props
 
     if (typeof size === `string`) {
@@ -36,12 +37,19 @@ class SpotifyPlayer extends Component {
     }
 
     return (
-
+/*
       <iframe title="Spotify" 
               src="https://open.spotify.com/embed/playlist/0sz2J5ZVROxMv3ZkVMTKuw?si=Tg-Dup3iQ7ivdIGo1R5fAQ" 
               width="300" height="380" frameborder="0" allowtransparency="true" 
               allow="encrypted-media">
       </iframe>      
+*/
+      <iframe title="Spotify" 
+      src={uri} 
+      width="300" height="380" frameborder="0" allowtransparency="true" 
+      allow="encrypted-media">
+      </iframe>      
+
     )
   }
 }
